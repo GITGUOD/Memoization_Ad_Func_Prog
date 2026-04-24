@@ -1,0 +1,202 @@
+## Sammanfattning – Assignment N2: Memoization
+
+Den här uppgiften handlar om **memoization**, alltså att göra långsamma rekursiva funktioner snabbare genom att **spara tidigare beräknade resultat i en cache** istället för att räkna om dem varje gång.
+
+Du ska arbeta med två problem:
+
+1. **Fibonacci-tal**
+2. **Longest Palindromic Subsequence (LPS)** – längsta delsekvens i en sträng som är ett palindrom
+
+---
+
+## Del 1: Fibonacci
+
+Den vanliga rekursiva Fibonacci-funktionen är långsam eftersom den räknar samma värden många gånger.
+
+### Du ska:
+
+### 1. Implementera vanlig Fibonacci
+
+```haskell
+fibo :: Int -> Int
+```
+
+### 2. Förstå caching
+
+Studera `fastFibo1` i filen och se hur en cache används.
+
+### 3. Skriva två generella hjälpfunktioner
+
+#### `listCache`
+
+Bygger en cache som lista av par:
+
+```haskell
+listCache [1,2,3] (\x -> 2*x)
+-- [(1,2),(2,4),(3,6)]
+```
+
+#### `listLookup`
+
+Letar upp värdet i cachen:
+
+```haskell
+listLookup [('a','b'),('c','d')] 'c'
+-- 'd'
+```
+
+---
+
+## Del 2: Oändlig Fibonacci-cache
+
+Du ska skapa:
+
+### `fibCache`
+
+En (lat) oändlig lista med Fibonacci-värden.
+
+### `fastFibo2`
+
+Slår bara upp värden i cachen.
+
+Sedan ändrar du så att cachen använder `fastFibo2` istället för långsam `fibo`.
+
+Det fungerar tack vare **lazy evaluation** i Haskell.
+
+---
+
+## Del 3: Open Recursion
+
+Du ska skriva:
+
+### `openFibo`
+
+Istället för att funktionen anropar sig själv får den en funktion som argument.
+
+```haskell
+openFibo f n = ...
+```
+
+Sedan bygger du:
+
+### `memoizeList`
+
+En generell memoization-funktion.
+
+### `fastFibo3`
+
+Snabb Fibonacci byggd med:
+
+* open recursion
+* memoization
+
+---
+
+# Del 4: Longest Palindromic Subsequence (LPS)
+
+Exempel:
+
+* `"kayak"` → `"kayak"`
+* `"writers"` → `"rir"`
+
+Du ska skriva:
+
+### `lps`
+
+Regler:
+
+1. Tom sträng → `""`
+2. En bokstav → samma bokstav
+3. Om första och sista bokstav är lika:
+
+   * ta LPS av mitten och lägg bokstäverna runt
+4. Annars:
+
+   * testa att ta bort första eller sista bokstaven
+   * välj längsta resultatet
+
+---
+
+# Del 5: Trie (prefixträd)
+
+Eftersom LPS använder strängar behövs en bättre cache än listor.
+
+Du ska använda:
+
+```haskell
+data Trie node edge = Trie node [(edge, Trie node edge)]
+```
+
+### Implementera:
+
+### `trieLookup`
+
+Slår upp ett ord i trädet.
+
+### `mapTrie`
+
+Mappar en funktion över alla noder.
+
+### Bygga ett oändligt trie
+
+Med funktionerna:
+
+* `rootTrie`
+* `edges`
+* `subtree`
+
+---
+
+# Del 6: Snabb LPS
+
+Skriv:
+
+### `trieCache`
+
+Bygger cache för strängfunktioner.
+
+### `openLPS`
+
+Open recursion-version av LPS.
+
+### `fastLPS`
+
+Snabb memoized version av LPS.
+
+---
+
+# Testning
+
+## Korrekthet
+
+Kör:
+
+```bash
+stack test
+```
+
+Använder QuickCheck för slumpmässiga tester.
+
+## Prestanda
+
+Kör:
+
+```bash
+stack bench --benchmark-arguments="--output bench.html"
+```
+
+Mäter hastighet med Criterion.
+
+---
+
+# Kort sagt: Vad lär du dig?
+
+Du tränar på:
+
+* Rekursion
+* Memoization
+* Lazy evaluation
+* Högre ordningens funktioner
+* Open recursion
+* Datastrukturen Trie
+* Prestandaoptimering i Haskell
