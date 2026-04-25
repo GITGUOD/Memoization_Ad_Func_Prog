@@ -1,15 +1,17 @@
-module Memoization where
+module Memoization where -- Defies module module
 
 -- This is an assignment where we try to memoize functions
 -- To speed up computations.
 
-import Data.Maybe (fromJust)
+import Data.Maybe (fromJust) -- Imports
 
 -- The problem
 -- If we write a recursive function, it may be slow
 fibo :: Int -> Int
 {- TO BE WRITTEN -}
-fibo = undefined
+fibo 0 = 0 -- base  
+fibo 1 = 1 -- base
+fibo n = fibo(n-1) + fibo(n-2) -- Otherwise recursivily calling itself
 
 -- In GHCI, do,
 -- > :set +s
@@ -18,6 +20,8 @@ fibo = undefined
 -- You'll see this runs slow
 runSlow :: Int
 runSlow = fibo 30
+-- This will run very slow as seen above as fibo calls itself repeatedly until it reaches the base.
+-- This is just an example
 
 -- We can make it faster, by creating a cache
 -- This takes a function and creates an infinite list of the results
