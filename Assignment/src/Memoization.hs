@@ -173,8 +173,25 @@ data Trie node edge = Trie node [(edge, Trie node edge)]
 
 -- First, looking for a list in a trie...
 trieLookup :: Eq e => Trie a e -> [e] -> a
+
+-- Takes:
+--   Trie a e  = trie storing values of type a
+--   [e]       = list/path to search for
+-- Returns:
+--   a         = value stored at destination node
+
 {- TO BE WRITTEN -}
-trieLookup t l = undefined
+trieLookup (Trie value _) [] = value
+-- If search path is empty:
+-- we are already at correct node,
+-- so return this node's value
+
+trieLookup (Trie _ children) (firstElement:lastElement) = trieLookup nextNode lastElement
+  -- Continue searching in correct child node
+  -- using remaining path letters
+  where
+    nextNode = fromJust (lookup firstElement children)
+    -- Find a child which matches firstElement
 
 -- Get a subset of a trie, with limited depth
 -- (Provided: Useful for debugging)
