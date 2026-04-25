@@ -4,6 +4,7 @@ module Memoization where -- Defies module module
 -- To speed up computations.
 
 import Data.Maybe (fromJust) -- Imports
+import Control.Arrow (ArrowChoice(left, right))
 
 -- The problem
 -- If we write a recursive function, it may be slow
@@ -61,25 +62,27 @@ runFast = fastFibo1 30
 -- We pass the function and the domain of the keys as an argument
 listCache :: [a] -> (a -> b) -> [(a, b)]
 {- TO BE WRITTEN -}
-listCache domain f = undefined
+listCache domain f = [(x, f x) | x <- domain] -- Creates a cache with keys and values.
+-- Using domain, it is very general like T declaration in Java which means that you can
+-- declare any type
 
 -- We create a function which looks up the
 -- result in the cache
 -- and use fromJust to get an error if the cache misses.
 listLookup :: Eq a => [(a, b)] -> a -> b
 {- TO BE WRITTEN -}
-listLookup cache value = undefined
+listLookup cache value = fromJust (lookup value cache) -- Searches tuple lists
 
 -- Create the cache for all integers...
 -- We use a 'fast fibonacci function' even if we haven't defined it yet!
 fibCache :: [(Int, Int)]
 {- TO BE WRITTEN -}
-fibCache = undefined
+fibCache = listCache [0..] fastFibo2 -- Using the already declared fastFibo
 
 -- And the fast function looks in the cache!
 fastFibo2 :: Int -> Int
 {- TO BE WRITTEN -}
-fastFibo2 n = undefined
+fastFibo2 n = listLookup fibCache n -- Read the fibcache
 
 -- Pause:
 -- We make the solution in two parts:
@@ -94,7 +97,7 @@ fastFibo2 n = undefined
 -- Now, for something cool
 -- What if we make a function that creates the cache, and immediately looks in it?
 memoizeWithList :: Eq a => [a] -> (a -> b) -> (a -> b)
-memoizeWithList domain = listLookup . listCache domain
+memoizeWithList domain = listLookup . listCache domain -- This basically turns a slow func into a cached function
 
 -- Maybe we can use it to memoize the old fibo function?
 testMemoize :: Int -> Int
@@ -117,12 +120,15 @@ testMemoize n =
 -- And it's easy to implement fibonacci again: (openFib fibo) does that.
 openFib :: (Int -> Int) -> Int -> Int
 {- TO BE WRITTEN -}
-openFib f n = undefined
+openFib f n = f(n-1)+f(n-2) -- recursive openness, a strategy which uses a recursive function as an argument
 
 -- We use openFib to create a cached function, and make sure
 -- The recursive calls call the fast version!
 fastFibo3 :: Int -> Int
 fastFibo3 = memoizeWithList [0..] (openFib fastFibo3)
+-- create cache for all integers
+-- use open recursion
+-- recursive calls go through cached version
 
 -- The memoize function creates the cache and looks in it immediately
 -- And because of Lazy evaluation, we get a function that takes a slow
@@ -136,7 +142,21 @@ dropLast l = take (length l - 1) l
 
 -- Slow version
 lps :: String -> String
-lps s = undefined
+-- lps s = undefined7
+-- Implementation
+lps [] = []
+lps [anything] = [anything]
+lps s
+  | first == lastChar = first : lps middle ++ [lastChar]  -- if first and last match: for instance radar: then we take the middle solution: ada asfirstChar = r and lastChar = r
+  | length left >= length right = left -- If removing first letter gives longer/equal result, choose left
+
+  | otherwise = right -- Otherwise take the right instead
+  where -- declaration of variables
+    first = head s -- First letter of the string
+    lastChar = last s -- Vise versa
+    middle = tail (init s) -- String without first and last letters
+    left = lps (tail s) --Try removing first letter
+    right = lps (dropLast s) -- Try removing last letter
 
 -- CACHES FOR LISTS OF THINGS
 
