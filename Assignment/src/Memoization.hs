@@ -77,11 +77,14 @@ listLookup cache value = fromJust (lookup value cache) -- Searches tuple lists
 -- We use a 'fast fibonacci function' even if we haven't defined it yet!
 fibCache :: [(Int, Int)]
 {- TO BE WRITTEN -}
-fibCache = listCache [0..] fastFibo2 -- Using the already declared fastFibo
+-- fibCache = listCache [0..] fastFibo2 -- Using the already declared fastFibo
+fibCache = listCache [0..] fibo
 
 -- And the fast function looks in the cache!
 fastFibo2 :: Int -> Int
 {- TO BE WRITTEN -}
+fastFibo2 0 = 0
+fastFibo2 1 = 1
 fastFibo2 n = listLookup fibCache n -- Read the fibcache
 
 -- Pause:
@@ -316,7 +319,7 @@ openLPS solve s
 -- Fast!
 fastLPS :: String -> String
 fastLPS s =
-  trieLookup cache
+  trieLookup cache s
   where
     alphabet = ['a'..'z'] ++ ['å', 'ä', 'ö']
     cache = trieCache alphabet (openLPS fastLPS) -- Possible and allowed leetters using/creating a cache
