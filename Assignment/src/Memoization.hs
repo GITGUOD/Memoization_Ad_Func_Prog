@@ -231,7 +231,7 @@ rootTrie domain = Trie [] (edges domain []) -- Creates the root with an empty li
 -- and the current node
 edges :: [a] -> [a] -> [(a, Trie [a] a)]
 {- TO BE WRITTEN -}
-edges domain currentNode = [(label, subtree domain label currentNode) | label <- domain] -- Creates a "gren" fore ach possible letter
+edges domain currentNode = [(label, subtree domain label currentNode) | label <- domain] -- Creates a "gren, combination" fore ach possible letter
 
 -- How do we build the subtree?
 -- We use the label we just followed
@@ -322,7 +322,7 @@ fastLPS s =
   trieLookup cache s
   where
     alphabet = ['a'..'z'] ++ ['å', 'ä', 'ö']
-    cache = trieCache alphabet (openLPS fastLPS) -- Possible and allowed leetters using/creating a cache
+    cache = trieCache alphabet (openLPS fastLPS) -- “what we do here is that we precompute all possible results once, store them in a trie, and then just look them up to speed up”
 
 -- So, what were the tricks?
 -- The first one is to build an infinite data-structure, to memoize the function

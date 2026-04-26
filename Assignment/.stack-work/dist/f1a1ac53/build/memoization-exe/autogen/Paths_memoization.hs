@@ -43,7 +43,7 @@ getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: 
 
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 bindir     = "C:\\Users\\tonny\\Downloads\\A2N-Memoization\\assignment\\.stack-work\\install\\b9950901\\bin"
-libdir     = "C:\\Users\\tonny\\Downloads\\A2N-Memoization\\assignment\\.stack-work\\install\\b9950901\\lib\\x86_64-windows-ghc-9.4.8\\memoization-0.1.0.0-5gTYd5OofYPHL1qzFQUaFS-memoization-exe"
+libdir     = "C:\\Users\\tonny\\Downloads\\A2N-Memoization\\assignment\\.stack-work\\install\\b9950901\\lib\\x86_64-windows-ghc-9.4.8\\memoization-0.1.0.0-AaQ9tgZKCew7ml8ag1ZaxX-memoization-exe"
 dynlibdir  = "C:\\Users\\tonny\\Downloads\\A2N-Memoization\\assignment\\.stack-work\\install\\b9950901\\lib\\x86_64-windows-ghc-9.4.8"
 datadir    = "C:\\Users\\tonny\\Downloads\\A2N-Memoization\\assignment\\.stack-work\\install\\b9950901\\share\\x86_64-windows-ghc-9.4.8\\memoization-0.1.0.0"
 libexecdir = "C:\\Users\\tonny\\Downloads\\A2N-Memoization\\assignment\\.stack-work\\install\\b9950901\\libexec\\x86_64-windows-ghc-9.4.8\\memoization-0.1.0.0"
