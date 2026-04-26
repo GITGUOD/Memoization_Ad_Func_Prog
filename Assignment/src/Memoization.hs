@@ -120,6 +120,8 @@ testMemoize n =
 -- And it's easy to implement fibonacci again: (openFib fibo) does that.
 openFib :: (Int -> Int) -> Int -> Int
 {- TO BE WRITTEN -}
+openFib _ 0 = 0
+openFib _ 1 = 1
 openFib f n = f(n-1)+f(n-2) -- recursive openness, a strategy which uses a recursive function as an argument
 
 -- We use openFib to create a cached function, and make sure
@@ -186,7 +188,7 @@ trieLookup (Trie value _) [] = value
 -- we are already at correct node,
 -- so return this node's value
 
-trieLookup (Trie _ children) (firstElement:lastElement) = trieLookup nextNode lastElement
+trieLookup (Trie _ children) (firstElement:nextElement) = trieLookup nextNode nextElement
   -- Continue searching in correct child node
   -- using remaining path letters
   where
@@ -204,7 +206,10 @@ limitTrie n (Trie v edges) =
 -- Edge labels stay the same.
 mapTrie :: (a -> b) -> Trie a e -> Trie b e
 {- TO BE WRITTEN -}
-mapTrie f (Trie v cs) = undefined
+mapTrie f (Trie value children) = Trie (f value) [(label, mapTrie f child) | (label, child) <- children]
+-- Change all values in the tree
+-- Trie (f value) takes all values and apply f. So if f is reverse and value is hi. It becomes "jeh"
+-- [(label, mapTrie f child) | ... ] Takes each child and keeps the label and keeps mapping recursively
 
 -- To build an infinite trie, we start from the root
 -- The root starts with the empty list...
@@ -212,7 +217,7 @@ mapTrie f (Trie v cs) = undefined
 -- The domain 'dom' defines how many edges we have per node
 rootTrie :: [a] -> Trie [a] a
 {- TO BE WRITTEN -}
-rootTrie domain = undefined
+rootTrie domain = Trie [] (edges domain []) -- Creates the root with an empty list. Each child has an edge
 
 -- How do we create the edges?
 -- We look at the domain,
@@ -223,7 +228,7 @@ rootTrie domain = undefined
 -- and the current node
 edges :: [a] -> [a] -> [(a, Trie [a] a)]
 {- TO BE WRITTEN -}
-edges domain currentNode = undefined
+edges domain currentNode = [(label, subtree domain label currentNode) | label <- domain] -- Creates a "gren" fore ach possible letter
 
 -- How do we build the subtree?
 -- We use the label we just followed
@@ -232,8 +237,9 @@ edges domain currentNode = undefined
 -- (using the edges function)
 subtree :: [a] -> a -> [a] -> Trie [a] a
 {- TO BE WRITTEN -}
-subtree domain label parent =
-  undefined
+subtree domain label parent = Trie newNode (edges domain newNode)
+  where
+    newNode = parent ++ [label] -- So if parent is "he" and label is j then we get the node as "hej" And then hej gets its own children etc
 
 -- Important: the trie is infinite because edges calls subtree, and subtree calls edges.
 
@@ -241,7 +247,8 @@ subtree domain label parent =
 -- provided with a domain (for the list elements)
 trieCache :: [e] -> ([e] -> b) -> Trie b e
 {- TO BE WRITTEN -}
-trieCache domain function = undefined
+trieCache domain function = mapTrie function (rootTrie domain)
+-- Building a tree with all possible strings
 
 {--
 You can inspect the cache with GHCI!
@@ -287,12 +294,32 @@ s1 = "bananrepubliksinvasionsarmestabsadjutant"
 s2 = "kontrabasfiolfodralmakarmästarlärling"
 
 openLPS :: (String -> String) -> (String -> String)
-openLPS s = undefined -- look at 'lps' for inspiration
+openLPS s [] = [] -- look at 'lps' for inspiration
+openLPS s [anything] = [anything]
+
+openLPS solve s
+  | first == lastChar =
+    first : solve middle ++ [lastChar]
+
+  | length left >= length right = left
+  | otherwise = right
+
+  where
+    first = head s
+    lastChar = last s
+    middle = tail (init s)
+
+    left = solve (tail s)
+    right = solve (dropLast s)
+
 
 -- Fast!
 fastLPS :: String -> String
 fastLPS s =
-  undefined
+  trieLookup cache
+  where
+    alphabet = ['a'..'z'] ++ ['å', 'ä', 'ö']
+    cache = trieCache alphabet (openLPS fastLPS) -- Possible and allowed leetters using/creating a cache
 
 -- So, what were the tricks?
 -- The first one is to build an infinite data-structure, to memoize the function
